@@ -43,7 +43,6 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
 
     // Initialize our configuration reader
     let settings = config::Config::builder()
-        // Add configuration values from a file named `configuration.yaml`
         .add_source(config::File::from(
             configuration_directory.join("base.yaml"),
         ))
