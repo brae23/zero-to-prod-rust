@@ -13,20 +13,20 @@ pub struct Settings {
 
 #[derive(serde::Deserialize, Clone)]
 pub struct ApplicationSettings {
+    pub host: String,
     #[serde(deserialize_with = "deserialize_number_from_string")]
     pub port: u16,
-    pub host: String,
 }
 
 #[derive(serde::Deserialize, Clone)]
 pub struct DatabaseSettings {
     pub username: String,
     pub password: Secret<String>,
-    #[serde(deserialize_with = "deserialize_number_from_string")]
-    pub port: u16,
     pub host: String,
     pub database_name: String,
     pub require_ssl: bool,
+    #[serde(deserialize_with = "deserialize_number_from_string")]
+    pub port: u16,
 }
 
 pub fn get_configuration() -> Result<Settings, config::ConfigError> {
