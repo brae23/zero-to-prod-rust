@@ -31,3 +31,11 @@ services:
       - key: APP_DATABASE__DATABASE_NAME
         scope: RUN_TIME
         value: ${newsletter.DATABASE}
+databases:
+  - cluster_name: zero2prod
+    db_user: postgres
+    name: newsletter
+    production: false
+    engine: PG
+    db_name: newsletter
+    version: 14
