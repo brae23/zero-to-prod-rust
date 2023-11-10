@@ -1,7 +1,9 @@
 use actix_web::http::header::ContentType;
 use actix_web::{web, HttpResponse};
+use actix_web_flash_messages::IncomingFlashMessages;
 use anyhow::Context;
 use sqlx::PgPool;
+use std::fmt::Write;
 use uuid::Uuid;
 
 use crate::authentication::UserId;
@@ -10,9 +12,16 @@ use crate::utils::e500;
 pub async fn admin_dashboard(
     user_id: web::ReqData<UserId>,
     pool: web::Data<PgPool>,
+    flash_messages: IncomingFlashMessages,
 ) -> Result<HttpResponse, actix_web::Error> {
     let user_id = user_id.into_inner();
     let username = get_username(*user_id, &pool).await.map_err(e500)?;
+
+    let mut msg_html = String::new();
+    for m in flash_messages.iter() {
+        writeln!(msg_html, "<p><i>{}</i></p>", m.content()).unwrap();
+    }
+
     Ok(HttpResponse::Ok()
         .content_type(ContentType::html())
         .body(format!(
@@ -23,6 +32,8 @@ pub async fn admin_dashboard(
                 <title>Admin dashboard</title>
             </head>
             <body>
+                {msg_html}
+                <p>Welcome {username}!</p>
                 <p>Available actions:</p>
                 <ol>
                     <li><a href="/admin/password">Change password</a></li>
@@ -31,8 +42,8 @@ pub async fn admin_dashboard(
                             <input type="submit" value="Logout">
                         </form>
                     </li>
+                    <li><a href="/admin/newsletters">Send a newsletter issue</a></li>
                 </ol>
-                <p>Welcome {username}</p>
             </body>
             </html>"#
         )))
