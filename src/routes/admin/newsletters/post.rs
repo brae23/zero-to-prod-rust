@@ -95,7 +95,7 @@ pub async fn publish_newsletter(
         }
     }
 
-    FlashMessage::error("Newsletter posted successfully!").send();
+    FlashMessage::info("Newsletter posted successfully!").send();
     Ok(see_other("/admin/dashboard"))
 }
 
